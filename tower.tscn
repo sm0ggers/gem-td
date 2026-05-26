@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://gbon7wkjrxnw"]
+
+[ext_resource type="Script" uid="uid://br58nw68e83r" path="res://tower.gd" id="1_k1sas"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dnc73"]
+
+[node name="Tower" type="StaticBody3D" unique_id=68393370]
+script = ExtResource("1_k1sas")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=663128402]
+shape = SubResource("BoxShape3D_dnc73")

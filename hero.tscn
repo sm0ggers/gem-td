@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b6nbtnswsmcan"]
+
+[ext_resource type="Script" uid="uid://gdmovfc1r4tc" path="res://hero.gd" id="1_780bu"]
+
+[node name="Hero" type="CharacterBody3D" unique_id=363545345]
+script = ExtResource("1_780bu")
+
+[node name="Node3D" type="Node3D" parent="." unique_id=1490751255]

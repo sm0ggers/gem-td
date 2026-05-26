@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c73fmxjgoh2dc"]
+
+[ext_resource type="Script" uid="uid://d2868t04t8bh3" path="res://projectile.gd" id="1_a85iw"]
+
+[node name="Projectile" type="Node3D" unique_id=1397893658]
+script = ExtResource("1_a85iw")

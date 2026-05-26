@@ -1,0 +1,127 @@
+[gd_scene format=3 uid="uid://b7uoil2v3kki7"]
+
+[ext_resource type="Script" uid="uid://cystps0ssywj8" path="res://gemtd_1_test.gd" id="1_3r6dy"]
+[ext_resource type="Script" uid="uid://bj3bsxn51sse8" path="res://grid_manager.gd" id="1_21a13"]
+[ext_resource type="PackedScene" uid="uid://b7as38xyn3upf" path="res://enemy.tscn" id="3_rxfn8"]
+[ext_resource type="Script" uid="uid://2a0bolhcbo6i" path="res://wave manager gd bugfix.gd" id="3_uuwwl"]
+[ext_resource type="Script" uid="uid://hccyl0d2fq2q" path="res://build_manager.gd" id="5_uuwwl"]
+[ext_resource type="Script" uid="uid://bpiqafgn6lh2" path="res://ui_manager.gd" id="6_o1mq0"]
+[ext_resource type="PackedScene" uid="uid://gbon7wkjrxnw" path="res://tower.tscn" id="6_v6had"]
+[ext_resource type="Script" uid="uid://cyb5i0t7656yk" path="res://hero_select_panel.gd" id="7_o1mq0"]
+[ext_resource type="Script" uid="uid://b3d7371x2k33u" path="res://ScoreManager.gd" id="7_uuwwl"]
+
+[node name="Main" type="Node3D" unique_id=1455273617]
+script = ExtResource("1_3r6dy")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=2101538151]
+transform = Transform3D(1, 0, 0, 0, 0.6467898, 0.7626684, 0, -0.7626684, 0.6467898, 0, 15, 15)
+
+[node name="GridManager" type="Node3D" parent="." unique_id=263535235]
+script = ExtResource("1_21a13")
+
+[node name="WaveManager" type="Node" parent="." unique_id=1902355799]
+script = ExtResource("3_uuwwl")
+enemy_scene = ExtResource("3_rxfn8")
+
+[node name="BuildManager" type="Node" parent="." unique_id=1541827609]
+script = ExtResource("5_uuwwl")
+tower_scene = ExtResource("6_v6had")
+
+[node name="UIManager" type="Control" parent="." unique_id=1733571226]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("6_o1mq0")
+
+[node name="MainMenuPanel" type="Panel" parent="UIManager" unique_id=2093935906]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+
+[node name="ClassicBtn" type="Button" parent="UIManager/MainMenuPanel" unique_id=619798427]
+layout_mode = 0
+offset_left = 483.0
+offset_top = 154.0
+offset_right = 591.0
+offset_bottom = 185.0
+text = "Classic Mode"
+
+[node name="BlitzBtn" type="Button" parent="UIManager/MainMenuPanel" unique_id=186081291]
+layout_mode = 0
+offset_left = 487.0
+offset_top = 208.0
+offset_right = 577.0
+offset_bottom = 239.0
+text = "Blitz Mode"
+
+[node name="HeroSelectPanel" type="Panel" parent="UIManager" unique_id=1295287751]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+script = ExtResource("7_o1mq0")
+
+[node name="GremlinBtn" type="Button" parent="UIManager/HeroSelectPanel" unique_id=1117558357]
+layout_mode = 0
+offset_left = 797.0
+offset_top = 286.0
+offset_right = 927.0
+offset_bottom = 317.0
+text = "Greedy Gremlin"
+
+[node name="MasonBtn" type="Button" parent="UIManager/HeroSelectPanel" unique_id=1751877936]
+layout_mode = 0
+offset_left = 802.0
+offset_top = 194.0
+offset_right = 923.0
+offset_bottom = 225.0
+text = "Clumsy Mason"
+
+[node name="GemologistBtn" type="Button" parent="UIManager/HeroSelectPanel" unique_id=213301957]
+layout_mode = 0
+offset_left = 800.0
+offset_top = 242.0
+offset_right = 896.0
+offset_bottom = 273.0
+text = "Gemologist"
+
+[node name="GameHUDPanel" type="Panel" parent="UIManager" unique_id=1461664256]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 1
+
+[node name="WaveLabel" type="Label" parent="UIManager/GameHUDPanel" unique_id=1637536196]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="GoldLabel" type="Label" parent="UIManager/GameHUDPanel" unique_id=108268587]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="TowerSidebarPanel" type="Panel" parent="UIManager/GameHUDPanel" unique_id=300576720]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="NameLabel" type="Label" parent="UIManager/GameHUDPanel/TowerSidebarPanel" unique_id=450712051]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="DamageLabel" type="Label" parent="UIManager/GameHUDPanel/TowerSidebarPanel" unique_id=28015694]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="RangeLabel" type="Label" parent="UIManager/GameHUDPanel/TowerSidebarPanel" unique_id=585891546]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="ScoreManager" type="Node" parent="." unique_id=202694290]
+script = ExtResource("7_uuwwl")
