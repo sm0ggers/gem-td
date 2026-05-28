@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WaveConfig" format=3 uid="uid://bohva7bkch2m5"]
+
+[ext_resource type="Resource" uid="uid://btghdkju5r2ip" path="res://runner_creep_w1.tres" id="1_qnhpx"]
+[ext_resource type="Script" uid="uid://bunhtp4nvg45v" path="res://wave_config.gd" id="2_0gdn7"]
+
+[resource]
+script = ExtResource("2_0gdn7")
+wave_title = "Wave 1 \"They're fast!\""
+enemy_type = ExtResource("1_qnhpx")
+enemy_count = 7
+metadata/_custom_type_script = "uid://bunhtp4nvg45v"

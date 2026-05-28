@@ -8,9 +8,49 @@ extends Node
 
 # --- GEMTD WAVE CORE DATA ---
 
-const CREEP_ARCHETYPES = {"Normal": {"base_health": 100.0, "base_speed": 2.5, "physical_res": 0.10, "magic_res": 0.10, "color": Color(0.2, 0.6, 0.9)}, "Runner": {"base_health": 60.0, "base_speed": 4.5, "physical_res": 0.05, "magic_res": 0.05, "color": Color(0.2, 0.9, 0.3)}, "Armored": {"base_health": 180.0, "base_speed": 1.8, "physical_res": 0.45, "magic_res": 0.0, "color": Color(0.6, 0.4, 0.2)}, "Boss": {"base_health": 1000.0, "base_speed": 2.0, "physical_res": 0.25, "magic_res": 0.25, "color": Color(0.9, 0.1, 0.1)}}
+# Updated to reference the new Enum values from EnemyArchetype
+const CREEP_ARCHETYPES = {
+	"Normal": {
+		"base_health": 100.0,
+		"base_speed": 2.5,
+		"physical_res": 0.10,
+		"magic_res": 0.10,
+		"color": Color(0.2, 0.6, 0.9),
+		"movement_type": 0 # EnemyArchetype.MoveType.GROUND
+	},
+	"Runner": {
+		"base_health": 60.0,
+		"base_speed": 4.5,
+		"physical_res": 0.05,
+		"magic_res": 0.05,
+		"color": Color(0.2, 0.9, 0.3),
+		"movement_type": 0 # EnemyArchetype.MoveType.GROUND
+	},
+	"Armored": {
+		"base_health": 180.0,
+		"base_speed": 1.8,
+		"physical_res": 0.45,
+		"magic_res": 0.0,
+		"color": Color(0.6, 0.4, 0.2),
+		"movement_type": 0 # EnemyArchetype.MoveType.GROUND
+	},
+	"Boss": {
+		"base_health": 1000.0,
+		"base_speed": 2.0,
+		"physical_res": 0.25,
+		"magic_res": 0.25,
+		"color": Color(0.9, 0.1, 0.1),
+		"movement_type": 0 # EnemyArchetype.MoveType.GROUND
+	}
+}
 
-const CLASSIC_WAVES = [{"type": "Normal", "count": 10}, {"type": "Normal", "count": 12}, {"type": "Runner", "count": 8}, {"type": "Normal", "count": 15}, {"type": "Boss", "count": 1}]
+const CLASSIC_WAVES = [
+	{"type": "Normal", "count": 10},
+	{"type": "Normal", "count": 12},
+	{"type": "Runner", "count": 8},
+	{"type": "Normal", "count": 15},
+	{"type": "Boss", "count": 1}
+]
 
 const BLITZ_WAVES = [
 	{"type": "Normal", "count": 5}, 
@@ -21,15 +61,12 @@ const BLITZ_WAVES = [
 
 # --- RUNTIME VARIABLES ---
 
-# --- RUNTIME VARIABLES ---
-
-
 var astar: AStarGrid2D 
 var current_wave_path: Array[Vector3] = []
 var spawn_timer: Timer 
 
 var current_wave_number: int = 1 
-var active_game_mode: String = "Classic" # Set via UIManager selection [cite: 10]
+var active_game_mode: String = "Normal" # FIXED: Set default matching profile dictionary names ("Normal" or "Blitz")
 var extra_enemies_modifier: int = 0 
 
 # Tracking the specific sequence to spawn for the current active round
@@ -39,7 +76,13 @@ var enemies_left_to_spawn: int = 0
 func _ready() -> void: 
 	_setup_spawn_timer() 
 	if score_manager: 
-		score_manager.wave_modifier_changed.connect(_on_difficulty_changed) 
+		score_manager.wave_modifier_changed.connect(_on_difficulty_changed)
+	
+	# Automatically run navigation setup on launch so it doesn't wait for wave click
+	if grid_manager:
+		# Small delay to make sure GridManager finished building visual blocks first
+		await get_tree().process_frame
+		setup_pathfinding()
 
 func _setup_spawn_timer() -> void: 
 	spawn_timer = Timer.new() 
@@ -64,21 +107,8 @@ func setup_pathfinding() -> void:
 	astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
 	astar.update()
 	
-	var coord_waypoints: Array[Vector2i] = []
-	coord_waypoints.append(profile["spawn"])
-	for cp in profile["checkpoints"]:
-		coord_waypoints.append(cp)
-	coord_waypoints.append(profile["exit"])
-	
-	current_wave_path.clear()
-	for i in range(coord_waypoints.size() - 1):
-		var segment = astar.get_id_path(coord_waypoints[i], coord_waypoints[i+1])
-		
-		if i > 0 and not segment.is_empty():
-			segment.remove_at(0)
-			
-		for coord in segment:
-			current_wave_path.append(_tile_to_world_position(coord, profile))
+	# Run initial coordinates building
+	_recalculate_active_paths()
 
 func _tile_to_world_position(grid_coord: Vector2i, profile: Dictionary) -> Vector3:
 	var offset_x: float = (profile["width"] - 1) / 2.0
@@ -92,10 +122,9 @@ func start_next_wave() -> void:
 	if current_wave_path.is_empty():
 		setup_pathfinding()
 	
-	# Fallback to schedule profiles based on selected game mode
-	var schedule = CLASSIC_WAVES if active_game_mode == "Classic" else BLITZ_WAVES
+	# FIXED: Match dynamic schedule safely against current runtime setup string
+	var schedule = CLASSIC_WAVES if active_game_mode == "Normal" else BLITZ_WAVES
 	
-	# Safety check: Reset or stop if game exceeded scheduled bounds
 	if current_wave_number > schedule.size():
 		print("Victory! All scheduled waves complete.")
 		return
@@ -103,7 +132,6 @@ func start_next_wave() -> void:
 	var wave_data = schedule[current_wave_number - 1]
 	active_wave_type = wave_data["type"]
 	
-	# Apply ScoreManager modification only if it isn't a boss round
 	if active_wave_type == "Boss":
 		enemies_left_to_spawn = wave_data["count"]
 	else:
@@ -115,31 +143,34 @@ func start_next_wave() -> void:
 func _on_spawn_timer_timeout() -> void:
 	if enemies_left_to_spawn <= 0:
 		spawn_timer.stop()
-		current_wave_number += 1 # Advance sequence index for next execution
+		current_wave_number += 1 
 		return
 		
 	if enemy_scene:
 		var enemy_instance = enemy_scene.instantiate()
 		
-		# 1. Fetch properties from database and compute dynamic exponential scaling
 		var archetype = CREEP_ARCHETYPES[active_wave_type]
 		var growth_rate: float = 1.25 if active_wave_type == "Boss" else 1.15
 		var final_hp = archetype["base_health"] * pow(growth_rate, current_wave_number - 1)
 		
-		# 2. Assign attributes to enemy node instance
+		# Assign baseline attributes
 		enemy_instance.max_health = final_hp
 		enemy_instance.current_health = final_hp
+		enemy_instance.base_speed = archetype["base_speed"]
 		enemy_instance.physical_resistance = archetype["physical_res"]
 		enemy_instance.magic_resistance = archetype["magic_res"]
 		
-		# 3. Add to hierarchy and route pathing
+		# MODULAR FIX: Set the active movement type state on the enemy body
+		if "current_movement_type" in enemy_instance:
+			enemy_instance.current_movement_type = archetype["movement_type"]
+		
 		get_parent().add_child(enemy_instance)
-		enemy_instance.add_to_group("enemies") # Critical for AOE / Chains!
+		enemy_instance.add_to_group("enemies") 
 		
 		if enemy_instance.has_method("set_path"):
 			enemy_instance.set_path(current_wave_path)
 			
-		# 4. Color the placeholder visual mesh based on identity profile
+		# Visual coloration
 		var mesh = enemy_instance.get_node_or_null("CSGSphere3D")
 		if mesh and mesh is CSGSphere3D:
 			var material = StandardMaterial3D.new()

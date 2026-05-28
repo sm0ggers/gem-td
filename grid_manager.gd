@@ -1,20 +1,29 @@
 extends Node3D
 
-# Define the Map Profiles
+# Define the Map Profiles matching classic Dota 2 GemTD parameters
 const MAP_PROFILES = {
 	"Normal": {
 		"width": 37,
 		"height": 37,
-		"spawn": Vector2i(0, 18),
-		"checkpoints": [Vector2i(18, 0), Vector2i(36, 18), Vector2i(18, 36)],
-		"exit": Vector2i(18, 18)
+		"spawn": Vector2i(4, 4),             # Top-Left (4 tiles inward)
+		"checkpoints": [
+			Vector2i(4, 18),         # CP1: Left side, center height
+			Vector2i(32, 18),        # CP2: Right side, center height
+			Vector2i(32, 4),         # CP3: Top-Right corner area
+			Vector2i(18, 4),         # CP4: Center-Top edge area
+			Vector2i(18, 32)         # CP5: Center-Bottom edge area
+		],
+		"exit": Vector2i(32, 32)             # Bottom-Right (4 tiles inward)   
 	},
 	"Blitz": {
 		"width": 27,
 		"height": 27,
-		"spawn": Vector2i(0, 13),
-		"checkpoints": [Vector2i(13, 0), Vector2i(26, 13)],
-		"exit": Vector2i(13, 13)
+		"spawn": Vector2i(13, 2),            # Top-Center (moved 2 tiles down from edge)
+		"checkpoints": [
+			Vector2i(24, 13),        # Right Checkpoint (moved 2 tiles left)
+			Vector2i(2, 13)          # Left Checkpoint (moved 2 tiles right)
+		],
+		"exit": Vector2i(13, 19)             # Center-Low (7 tiles up from the bottom: 26 - 7 = 19)
 	}
 }
 

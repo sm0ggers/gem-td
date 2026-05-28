@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="WaveConfig" format=3 uid="uid://cam8r14in5b4p"]
+
+[ext_resource type="Resource" uid="uid://cy4rbl7ce4kgk" path="res://bat_flying_creep1.tres" id="1_6qlw1"]
+[ext_resource type="Script" uid="uid://bunhtp4nvg45v" path="res://wave_config.gd" id="1_8yyje"]
+
+[resource]
+script = ExtResource("1_8yyje")
+wave_title = "Wave 3 \"They fly fast!\""
+enemy_type = ExtResource("1_6qlw1")
+enemy_count = 7
+metadata/_custom_type_script = "uid://bunhtp4nvg45v"

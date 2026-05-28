@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyArchetype" format=3 uid="uid://btghdkju5r2ip"]
+
+[ext_resource type="Script" uid="uid://knm874bqbqa" path="res://enemy_archetype.gd" id="1_pf4sj"]
+
+[resource]
+script = ExtResource("1_pf4sj")
+type_name = "Runner1"
+base_speed = 6.0
+physical_resistance = 0.14
+metadata/_custom_type_script = "uid://knm874bqbqa"

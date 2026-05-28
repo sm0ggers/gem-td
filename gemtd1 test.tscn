@@ -9,12 +9,19 @@
 [ext_resource type="PackedScene" uid="uid://gbon7wkjrxnw" path="res://tower.tscn" id="6_v6had"]
 [ext_resource type="Script" uid="uid://cyb5i0t7656yk" path="res://hero_select_panel.gd" id="7_o1mq0"]
 [ext_resource type="Script" uid="uid://b3d7371x2k33u" path="res://ScoreManager.gd" id="7_uuwwl"]
+[ext_resource type="PackedScene" uid="uid://bna1nrq6hqcgs" path="res://camera_rig.tscn" id="10_dn30b"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_v6had"]
+
+[sub_resource type="Sky" id="Sky_dn30b"]
+sky_material = SubResource("PhysicalSkyMaterial_v6had")
+
+[sub_resource type="Environment" id="Environment_ge4qu"]
+background_mode = 2
+sky = SubResource("Sky_dn30b")
 
 [node name="Main" type="Node3D" unique_id=1455273617]
 script = ExtResource("1_3r6dy")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=2101538151]
-transform = Transform3D(1, 0, 0, 0, 0.6467898, 0.7626684, 0, -0.7626684, 0.6467898, 0, 15, 15)
 
 [node name="GridManager" type="Node3D" parent="." unique_id=263535235]
 script = ExtResource("1_21a13")
@@ -125,3 +132,11 @@ offset_bottom = 23.0
 
 [node name="ScoreManager" type="Node" parent="." unique_id=202694290]
 script = ExtResource("7_uuwwl")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1777690941]
+transform = Transform3D(0.6984153, 0.5191452, -0.49265036, 0, 0.68835455, 0.72537434, 0.71569276, -0.50661254, 0.48075733, 0, 0, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1077001402]
+environment = SubResource("Environment_ge4qu")
+
+[node name="CameraRig" parent="." unique_id=2123157767 instance=ExtResource("10_dn30b")]

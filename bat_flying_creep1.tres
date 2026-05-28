@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="EnemyArchetype" format=3 uid="uid://cy4rbl7ce4kgk"]
+
+[ext_resource type="Script" uid="uid://knm874bqbqa" path="res://enemy_archetype.gd" id="1_xgkrt"]
+
+[resource]
+script = ExtResource("1_xgkrt")
+type_name = "Bat"
+movement_type = 2
+display_color = Color(0.5600202, 0.11354164, 0.68907315, 1)
+metadata/_custom_type_script = "uid://knm874bqbqa"

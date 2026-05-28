@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bna1nrq6hqcgs"]
+
+[ext_resource type="Script" uid="uid://dco1xy71bgs6w" path="res://camera_rig.gd" id="1_0vvw7"]
+
+[node name="CameraRig" type="Node3D" unique_id=2123157767]
+script = ExtResource("1_0vvw7")
+
+[node name="CameraHinge" type="Node3D" parent="." unique_id=732690086]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, 0.70710677, 0, -0.70710677, 0.70710677, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraHinge" unique_id=1130405739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)

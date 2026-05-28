@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyArchetype" format=3 uid="uid://d4f3dxmnoj4pu"]
+
+[ext_resource type="Script" uid="uid://knm874bqbqa" path="res://enemy_archetype.gd" id="1_oly6b"]
+
+[resource]
+script = ExtResource("1_oly6b")
+type_name = "Wisp"
+movement_type = 1
+base_health = 75.0
+base_speed = 3.5
+physical_resistance = 0.5
+magic_resistance = 0.14
+display_color = Color(0.03356754, 0.6493807, 0.707457, 1)
+metadata/_custom_type_script = "uid://knm874bqbqa"
