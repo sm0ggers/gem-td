@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MapProfile" format=3 uid="uid://cqfit2dguu0pr"]
+
+[ext_resource type="Script" uid="uid://ceij4ccj1cikc" path="res://map_profile.gd" id="1_e3fnd"]
+
+[resource]
+script = ExtResource("1_e3fnd")
+checkpoints = Array[Vector2i]([Vector2i(4, 18), Vector2i(32, 18), Vector2i(32, 4), Vector2i(18, 4), Vector2i(18, 32)])
+metadata/_custom_type_script = "uid://ceij4ccj1cikc"

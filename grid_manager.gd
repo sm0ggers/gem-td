@@ -1,33 +1,7 @@
 extends Node3D
 
-# Define the Map Profiles matching classic Dota 2 GemTD parameters
-const MAP_PROFILES = {
-	"Normal": {
-		"width": 37,
-		"height": 37,
-		"spawn": Vector2i(4, 4),             # Top-Left (4 tiles inward)
-		"checkpoints": [
-			Vector2i(4, 18),         # CP1: Left side, center height
-			Vector2i(32, 18),        # CP2: Right side, center height
-			Vector2i(32, 4),         # CP3: Top-Right corner area
-			Vector2i(18, 4),         # CP4: Center-Top edge area
-			Vector2i(18, 32)         # CP5: Center-Bottom edge area
-		],
-		"exit": Vector2i(32, 32)             # Bottom-Right (4 tiles inward)   
-	},
-	"Blitz": {
-		"width": 27,
-		"height": 27,
-		"spawn": Vector2i(13, 2),            # Top-Center (moved 2 tiles down from edge)
-		"checkpoints": [
-			Vector2i(24, 13),        # Right Checkpoint (moved 2 tiles left)
-			Vector2i(2, 13)          # Left Checkpoint (moved 2 tiles right)
-		],
-		"exit": Vector2i(13, 19)             # Center-Low (7 tiles up from the bottom: 26 - 7 = 19)
-	}
-}
-
-@export_enum("Normal", "Blitz") var active_profile: String = "Normal"
+# 1. Change this from a String enum to a MapProfile object slot!
+@export var active_profile: MapProfile
 
 # Materials for visual debugging
 var mat_normal: StandardMaterial3D
@@ -37,7 +11,10 @@ var mat_exit: StandardMaterial3D
 
 func _ready() -> void:
 	_initialize_materials()
-	initialize_map(active_profile)
+	
+	# 2. Add a quick safety check so it only auto-runs if a file is attached
+	if active_profile != null:
+		initialize_map(active_profile)
 
 func _initialize_materials() -> void:
 	mat_normal = StandardMaterial3D.new()
@@ -53,25 +30,29 @@ func _initialize_materials() -> void:
 	mat_exit.albedo_color = Color(0.8, 0.0, 0.0) # Red
 
 ## Clears existing grid tiles and builds a new map based on the profile name
-func initialize_map(profile_name: String) -> void:
-	if not MAP_PROFILES.has(profile_name):
-		push_error("Map profile '" + profile_name + "' does not exist.")
+## Clears existing grid tiles and builds a new map based on the passed profile resource
+func initialize_map(profile: MapProfile) -> void:
+	# 1. Safety check to make sure a valid data file was actually passed in
+	if profile == null:
+		push_error("Cannot initialize map: Profile data is null.")
 		return
 		
-	active_profile = profile_name
+	# 2. Track the active profile name (matches your old code's logic)
+	active_profile = profile
 	_clear_grid()
 	
-	var config = MAP_PROFILES[profile_name]
-	var width: int = config["width"]
-	var height: int = config["height"]
-	var spawn: Vector2i = config["spawn"]
-	var checkpoints: Array = config["checkpoints"]
-	var exit: Vector2i = config["exit"]
+	# 3. Read variables directly from the custom resource object instead of a dictionary
+	var width: int = profile.width
+	var height: int = profile.height
+	var spawn: Vector2i = profile.spawn
+	var checkpoints: Array[Vector2i] = profile.checkpoints
+	var exit: Vector2i = profile.exit
 	
-	# Center the grid around the GridManager's origin (optional, but highly recommended for GemTD)
+	# 4. Center the grid around the GridManager's origin
 	var offset_x: float = (width - 1) / 2.0
 	var offset_z: float = (height - 1) / 2.0
 	
+	# --- The rest of your loop below remains 100% untouched and original! ---
 	for x in range(width):
 		for z in range(height):
 			var current_coord = Vector2i(x, z)
@@ -95,7 +76,6 @@ func initialize_map(profile_name: String) -> void:
 				tile.name = "Tile_%d_%d" % [x, z]
 			
 			# Position the tile exactly 1 unit apart
-			# In Godot 3D, X is Right/Left and Z is Forward/Back
 			tile.position = Vector3(x - offset_x, 0, z - offset_z)
 			
 			add_child(tile)

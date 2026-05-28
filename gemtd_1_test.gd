@@ -10,13 +10,19 @@ func _ready() -> void:
 	ui_manager.map_type_selected.connect(_on_ui_map_selected) 
 	ui_manager.hero_selected.connect(_on_ui_hero_selected) 
 
-func _on_ui_map_selected(profile_name: String) -> void:
-	print("SUCCESS! Main.gd received the button click for: ", profile_name) 
-	# This safely triggers your GridManager to build the actual 3D blocks! [cite: 24, 26]
-	grid_manager.initialize_map(profile_name) 
+func _on_ui_map_selected(profile: MapProfile) -> void:
+	print("Passing map profile through middle layer: ", profile.profile_name)
+	# Safely hands off the object directly to the waiting GridManager
+	if $GridManager:
+		$GridManager.initialize_map(profile)
 
-func _on_ui_hero_selected(hero_name: String, modifiers: Dictionary) -> void:
-	print("Hero chosen: ", hero_name, " with modifiers: ", modifiers) 
+func _on_ui_hero_selected(profile: HeroData) -> void:
+	print("Passing hero data through middle layer: ", profile.hero_name)
+	
+	# Uses the helper function we wrote inside HeroData to get the old dictionary structure
+	var modifiers: Dictionary = profile.get_modifiers_dict()
+	
+	# --- Your original economy/gameplay logic below this line remains exactly the same! ---
 	
 	# 1. Apply any hero configuration modifiers here (e.g. bonus starting gold)
 	# ...

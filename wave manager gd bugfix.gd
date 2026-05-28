@@ -96,10 +96,13 @@ func _on_difficulty_changed(new_modifier: int) -> void:
 # --- EXPORTED PATHFINDING LOGIC --- 
 
 func setup_pathfinding() -> void:
-	var profile = grid_manager.MAP_PROFILES[grid_manager.active_profile]
+	# Grab the active MapProfile object directly from the grid manager
+	var profile: MapProfile = grid_manager.active_profile
+	if not profile: return # Safety check
 	
 	astar = AStarGrid2D.new()
-	astar.region = Rect2i(0, 0, profile["width"], profile["height"])
+	# Read dimensions natively using object dot-notation
+	astar.region = Rect2i(0, 0, profile.width, profile.height)
 	astar.cell_size = Vector2(1, 1)
 	
 	astar.default_compute_heuristic = AStarGrid2D.HEURISTIC_CHEBYSHEV
@@ -110,9 +113,11 @@ func setup_pathfinding() -> void:
 	# Run initial coordinates building
 	_recalculate_active_paths()
 
-func _tile_to_world_position(grid_coord: Vector2i, profile: Dictionary) -> Vector3:
-	var offset_x: float = (profile["width"] - 1) / 2.0
-	var offset_z: float = (profile["height"] - 1) / 2.0
+# CHANGED: Parameter type updated from Dictionary to MapProfile object
+func _tile_to_world_position(grid_coord: Vector2i, profile: MapProfile) -> Vector3:
+	# Read width and height safely from the resource object
+	var offset_x: float = (profile.width - 1) / 2.0
+	var offset_z: float = (profile.height - 1) / 2.0
 	return Vector3(grid_coord.x - offset_x, 0.05, grid_coord.y - offset_z)
 
 # --- WAVE EXECUTION ENGINE ---
@@ -187,12 +192,15 @@ func block_tile(grid_coord: Vector2i) -> void:
 		_recalculate_active_paths()
 
 func _recalculate_active_paths() -> void:
-	var profile = grid_manager.MAP_PROFILES[grid_manager.active_profile]
+	# Grab the active MapProfile object directly from the grid manager
+	var profile: MapProfile = grid_manager.active_profile
+	if not profile: return
 	
-	var coord_waypoints: Array[Vector2i] = [profile["spawn"]]
-	for cp in profile["checkpoints"]:
+	# Read properties cleanly directly from the object fields
+	var coord_waypoints: Array[Vector2i] = [profile.spawn]
+	for cp in profile.checkpoints:
 		coord_waypoints.append(cp)
-	coord_waypoints.append(profile["exit"])
+	coord_waypoints.append(profile.exit)
 	
 	current_wave_path.clear()
 	for i in range(coord_waypoints.size() - 1):

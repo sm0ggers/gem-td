@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="MapProfile" format=3 uid="uid://bd0ab0q6pulja"]
+
+[ext_resource type="Script" uid="uid://ceij4ccj1cikc" path="res://map_profile.gd" id="1_casxt"]
+
+[resource]
+script = ExtResource("1_casxt")
+profile_name = "Blitz"
+width = 27
+height = 27
+checkpoints = Array[Vector2i]([Vector2i(22, 22), Vector2i(4, 22), Vector2i(22, 4)])
+exit = Vector2i(13, 13)
+metadata/_custom_type_script = "uid://ceij4ccj1cikc"

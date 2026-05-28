@@ -1,15 +1,15 @@
 extends Control
 
-# Signals to communicate outward to your Level/Game Managers
-signal map_type_selected(profile_name: String)
-signal hero_selected(hero_name: String, modifiers: Dictionary)
+# Passing the actual Resource file outward instead of just a text name string!
+signal map_type_selected(profile: MapProfile)
+signal hero_selected(profile: HeroData)
 
 # UI Panel References
 @onready var main_menu_panel: Control = $MainMenuPanel
 @onready var hero_select_panel: Control = $HeroSelectPanel
 @onready var game_hud_panel: Control = $GameHUDPanel
 
-# Game HUD Specific References (Sidebar labels)
+# Game HUD Specific References
 @onready var wave_label: Label = $GameHUDPanel/WaveLabel
 @onready var gold_label: Label = $GameHUDPanel/GoldLabel
 @onready var tower_sidebar: Control = $GameHUDPanel/TowerSidebarPanel
@@ -17,12 +17,14 @@ signal hero_selected(hero_name: String, modifiers: Dictionary)
 @onready var tower_dmg_lbl: Label = $GameHUDPanel/TowerSidebarPanel/DamageLabel
 @onready var tower_range_lbl: Label = $GameHUDPanel/TowerSidebarPanel/RangeLabel
 
-# Hero Configuration Stats
-const HERO_PROFILES = {
-	"Greedy Gremlin": {"gold_bonus": 150, "luck": 1.2},
-	"Clumsy Mason": {"rock_refund_rate": 0.25, "luck": 0.8},
-	"Gemologist": {"upgrade_discount": 0.15, "luck": 1.0}
-}
+# --- 📁 HARDCODED DICTIONARIES REMOVED ---
+# We load the data files directly using Godot's built-in 'preload' function
+@onready var map_normal = preload("res://classic_profile.tres")
+@onready var map_blitz = preload("res://blitz_profile.tres")
+
+@onready var hero_gremlin = preload("res://gremlin_hero.tres")
+@onready var hero_mason = preload("res://mason_hero.tres")
+@onready var hero_gemologist = preload("res://gemologist_hero.tres")
 
 enum GameState { MAIN_MENU, HERO_SELECT, GAMEPLAY }
 var current_state: GameState = GameState.MAIN_MENU
@@ -30,47 +32,40 @@ var current_state: GameState = GameState.MAIN_MENU
 func _ready() -> void:
 	_change_state(GameState.MAIN_MENU)
 	_connect_button_signals()
-	tower_sidebar.hide() # Hide tower stats panel until a tower is clicked
+	tower_sidebar.hide()
 
-## State Machine management for swapping screens cleanly
 func _change_state(new_state: GameState) -> void:
 	current_state = new_state
-	
-	# Toggle screen visibility based on state
 	main_menu_panel.visible = (current_state == GameState.MAIN_MENU)
 	hero_select_panel.visible = (current_state == GameState.HERO_SELECT)
 	game_hud_panel.visible = (current_state == GameState.GAMEPLAY)
 
 func _connect_button_signals() -> void:
-	# Main Menu Buttons (Assumes nodes named 'ClassicBtn' and 'BlitzBtn' exist)
-	$MainMenuPanel/ClassicBtn.pressed.connect(_on_map_button_pressed.bind("Normal"))
-	$MainMenuPanel/BlitzBtn.pressed.connect(_on_map_button_pressed.bind("Blitz"))
+	# Main Menu Buttons - We pass the loaded data files directly!
+	$MainMenuPanel/ClassicBtn.pressed.connect(_on_map_button_pressed.bind(map_normal))
+	$MainMenuPanel/BlitzBtn.pressed.connect(_on_map_button_pressed.bind(map_blitz))
 	
-	# Hero Select Buttons
-	$HeroSelectPanel/GremlinBtn.pressed.connect(_on_hero_button_pressed.bind("Greedy Gremlin"))
-	$HeroSelectPanel/MasonBtn.pressed.connect(_on_hero_button_pressed.bind("Clumsy Mason"))
-	$HeroSelectPanel/GemologistBtn.pressed.connect(_on_hero_button_pressed.bind("Gemologist"))
+	# Hero Select Buttons - Passing the hero resources
+	$HeroSelectPanel/GremlinBtn.pressed.connect(_on_hero_button_pressed.bind(hero_gremlin))
+	$HeroSelectPanel/MasonBtn.pressed.connect(_on_hero_button_pressed.bind(hero_mason))
+	$HeroSelectPanel/GemologistBtn.pressed.connect(_on_hero_button_pressed.bind(hero_gemologist))
 
 # --- INPUT HANDLERS ---
 
-func _on_map_button_pressed(profile_name: String) -> void:
-	map_type_selected.emit(profile_name)
+func _on_map_button_pressed(profile: MapProfile) -> void:
+	map_type_selected.emit(profile)
 	_change_state(GameState.HERO_SELECT)
 
-func _on_hero_button_pressed(hero_name: String) -> void:
-	var stats = HERO_PROFILES[hero_name]
-	hero_selected.emit(hero_name, stats)
+func _on_hero_button_pressed(profile: HeroData) -> void:
+	hero_selected.emit(profile)
 	_change_state(GameState.GAMEPLAY)
 
-# --- PUBLIC APIS (Call these from game loops/managers) ---
+# --- PUBLIC APIS ---
 
-## Updates the general economy and wave values displayed on screen
 func update_hud_values(wave_num: int, gold_count: int) -> void:
 	wave_label.text = "Wave: %d" % wave_num
 	gold_label.text = "Gold: %d" % gold_count
 
-## Connected to your 3D interaction raycast layer. 
-## Safe bridge data parser when selecting structures.
 func display_tower_stats(tower_data: Dictionary) -> void:
 	if current_state != GameState.GAMEPLAY: return
 	
