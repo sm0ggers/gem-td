@@ -1,5 +1,5 @@
 extends Node
-
+#GEMINIbuild test
 @export var tower_scene: PackedScene
 @onready var grid_manager = $"../GridManager"
 @onready var wave_manager = $"../WaveManager"
