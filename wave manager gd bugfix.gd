@@ -149,6 +149,13 @@ func _on_spawn_timer_timeout() -> void:
 	if enemies_left_to_spawn <= 0:
 		spawn_timer.stop()
 		current_wave_number += 1 
+		
+		# ADDED: Notify BuildManager that the combat phase has ended
+		if grid_manager and get_parent().has_node("BuildManager"):
+			var b_mgr = get_parent().get_node("BuildManager")
+			if b_mgr.current_state == b_mgr.BuildState.WAVE_PHASE:
+				b_mgr.reset_for_next_building_round()
+		
 		return
 		
 	if enemy_scene:

@@ -9,7 +9,12 @@
 [ext_resource type="PackedScene" uid="uid://gbon7wkjrxnw" path="res://tower.tscn" id="6_v6had"]
 [ext_resource type="Script" uid="uid://cyb5i0t7656yk" path="res://hero_select_panel.gd" id="7_o1mq0"]
 [ext_resource type="Script" uid="uid://b3d7371x2k33u" path="res://ScoreManager.gd" id="7_uuwwl"]
+[ext_resource type="Resource" uid="uid://bd0ab0q6pulja" path="res://blitz_profile.tres" id="8_ge4qu"]
+[ext_resource type="Resource" uid="uid://cqfit2dguu0pr" path="res://classic_profile.tres" id="8_mbmtp"]
 [ext_resource type="PackedScene" uid="uid://bna1nrq6hqcgs" path="res://camera_rig.tscn" id="10_dn30b"]
+[ext_resource type="Resource" uid="uid://kyqr2idxxx33" path="res://gremlin_hero.tres" id="11_q7qor"]
+[ext_resource type="Resource" uid="uid://q5y81y3drugv" path="res://mason_hero.tres" id="12_4nqh0"]
+[ext_resource type="Resource" uid="uid://cp2rg23g8lflw" path="res://gemologist_hero.tres" id="13_ck4rk"]
 
 [sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_v6had"]
 
@@ -54,6 +59,7 @@ offset_top = 154.0
 offset_right = 591.0
 offset_bottom = 185.0
 text = "Classic Mode"
+metadata/map_profile = ExtResource("8_mbmtp")
 
 [node name="BlitzBtn" type="Button" parent="UIManager/MainMenuPanel" unique_id=186081291]
 layout_mode = 0
@@ -62,6 +68,7 @@ offset_top = 208.0
 offset_right = 577.0
 offset_bottom = 239.0
 text = "Blitz Mode"
+metadata/map_profile = ExtResource("8_ge4qu")
 
 [node name="HeroSelectPanel" type="Panel" parent="UIManager" unique_id=1295287751]
 layout_mode = 0
@@ -77,6 +84,7 @@ offset_top = 286.0
 offset_right = 927.0
 offset_bottom = 317.0
 text = "Greedy Gremlin"
+metadata/hero_data = ExtResource("11_q7qor")
 
 [node name="MasonBtn" type="Button" parent="UIManager/HeroSelectPanel" unique_id=1751877936]
 layout_mode = 0
@@ -85,6 +93,7 @@ offset_top = 194.0
 offset_right = 923.0
 offset_bottom = 225.0
 text = "Clumsy Mason"
+metadata/hero_data = ExtResource("12_4nqh0")
 
 [node name="GemologistBtn" type="Button" parent="UIManager/HeroSelectPanel" unique_id=213301957]
 layout_mode = 0
@@ -93,6 +102,7 @@ offset_top = 242.0
 offset_right = 896.0
 offset_bottom = 273.0
 text = "Gemologist"
+metadata/hero_data = ExtResource("13_ck4rk")
 
 [node name="GameHUDPanel" type="Panel" parent="UIManager" unique_id=1461664256]
 layout_mode = 0

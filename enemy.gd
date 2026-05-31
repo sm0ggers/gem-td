@@ -52,17 +52,12 @@ func on_reach_exit() -> void:
 	queue_free()
 
 ## Called by the WaveManager to inject the map routing coordinates
+## Called by the WaveManager to inject the map routing coordinates
 func set_path(new_path: Array[Vector3]) -> void:
 	current_path = new_path
 	path_index = 0
 	if current_path.size() > 0:
 		global_position = current_path[0]
-	
-	# INITIALIZE STATE HERE: Set the current type to match the profile baseline on spawn
-	if get_node_or_null("../WaveManager"):
-		var active_wave = $"../WaveManager".current_active_wave
-		if active_wave and active_wave.enemy_type:
-			current_movement_type = active_wave.enemy_type.movement_type
 
 func take_damage(amount: float, damage_type: String) -> void:
 	var final_damage: float = amount
